@@ -130,9 +130,13 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		}
 		foreach($files as $file) {
 			if(strstr($file, 'main.less')) {
-				$test = file_put_contents($file,"\n//version".$newstamp, FILE_APPEND);
+				$content = file_get_contents($file);
+				$tempcontent = explode('//version',$content);
+				$content = $tempcontent[0].'//version'.$newstamp;
+				$test = file_put_contents($file,$content);
 			}
-		}		
+		}
+		
 
 		switch( $this->configuration['enable']['mode'] )
 		{
