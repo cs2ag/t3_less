@@ -116,6 +116,23 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			}
 			$files = \DG\T3Less\Utility\Utilities::flatArray( null, $files );
 		}
+		
+		$newstamp = 0;
+		$dirs = \TYPO3\CMS\Core\Utility\GeneralUtility::get_dirs( $this->lessfolder);
+		foreach($dirs as $dir) {
+			$infiles = \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir( $this->lessfolder.$dir, "less", TRUE );
+			foreach($infiles as $ffiles) {
+				$timedat = filemtime($ffiles);
+				if ($timedat > $newstamp) {
+					$newstamp = $timedat;
+				}
+			}
+		}
+		foreach($files as $file) {
+			if(strstr($file, 'main.less')) {
+				$test = file_put_contents($file,"\n//version".$newstamp, FILE_APPEND);
+			}
+		}		
 
 		switch( $this->configuration['enable']['mode'] )
 		{
