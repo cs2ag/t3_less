@@ -91,9 +91,20 @@ class LessPhpController extends BaseController
 
 		$files = \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir( $this->outputfolder, "css" );
 		//respect given sort order defined in TS
-		usort( $files, array( $this, 'getSortOrderPhp' ) );
+		//usort( $files, array( $this, 'getSortOrderPhp' ) );
+		
+		  $newstamp = 0; 
+	          $cssFile = ''; 
+	          foreach( $files as $cssFiletry ) 
+	          { 
+	               $timedat = filemtime($this->outputfolder.$cssFiletry); 
+	               if ($timedat > $newstamp) { 
+	                    $newstamp = $timedat; 
+	                    $cssFile = $cssFiletry; 
+	               } 
+	          } 
 
-		foreach( $files as $cssFile )
+		if($cssFile != '')
 		{
 			$excludeFromPageRender = isset($this->configuration['phpcompiler']['filesettings'][substr( $cssFile, 0, -37 )]['excludeFromPageRenderer']) ? $this->configuration['phpcompiler']['filesettings'][substr( $cssFile, 0, -37 )]['excludeFromPageRenderer'] : 0;
 			if( !$excludeFromPageRender || $excludeFromPageRender == 0 )
