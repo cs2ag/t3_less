@@ -1,27 +1,27 @@
 <?php
 namespace DG\T3Less\Controller;
-/* * *************************************************************
- *  Copyright notice
- *
- *  (c) 2013 David Greiner <hallo@davidgreiner.de>
- *  All rights reserved
- *
- *  This script is part of the TYPO3 project. The TYPO3 project is
- *  free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  The GNU General Public License can be found at
- *  http://www.gnu.org/copyleft/gpl.html.
- *
- *  This script is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  This copyright notice MUST APPEAR in all copies of the script!
- * ************************************************************* */
+	/* * *************************************************************
+     *  Copyright notice
+     *
+     *  (c) 2013 David Greiner <hallo@davidgreiner.de>
+     *  All rights reserved
+     *
+     *  This script is part of the TYPO3 project. The TYPO3 project is
+     *  free software; you can redistribute it and/or modify
+     *  it under the terms of the GNU General Public License as published by
+     *  the Free Software Foundation; either version 3 of the License, or
+     *  (at your option) any later version.
+     *
+     *  The GNU General Public License can be found at
+     *  http://www.gnu.org/copyleft/gpl.html.
+     *
+     *  This script is distributed in the hope that it will be useful,
+     *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+     *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     *  GNU General Public License for more details.
+     *
+     *  This copyright notice MUST APPEAR in all copies of the script!
+     * ************************************************************* */
 
 /**
  *
@@ -116,9 +116,13 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			}
 			$files = \DG\T3Less\Utility\Utilities::flatArray( null, $files );
 		}
-		
+
 		$newstamp = 0;
 		$dirs = \TYPO3\CMS\Core\Utility\GeneralUtility::get_dirs( $this->lessfolder);
+		if($this->lessfolder != 'typo3conf/ext/template_local/Resources/Public/Stylesheet/less/') {
+			$dirsmain = \TYPO3\CMS\Core\Utility\GeneralUtility::get_dirs('typo3conf/ext/template_local/Resources/Public/Stylesheet/less/');
+		}
+
 		foreach($dirs as $dir) {
 			$infiles = \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir( $this->lessfolder.$dir, "less", TRUE );
 			foreach($infiles as $ffiles) {
@@ -128,6 +132,18 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 				}
 			}
 		}
+		if($this->lessfolder != 'typo3conf/ext/template_local/Resources/Public/Stylesheet/less/') {
+			foreach ($dirsmain as $dir) {
+				$infiles = \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir('typo3conf/ext/template_local/Resources/Public/Stylesheet/less/' . $dir, "less", TRUE);
+				foreach ($infiles as $ffiles) {
+					$timedat = filemtime($ffiles);
+					if ($timedat > $newstamp) {
+						$newstamp = $timedat;
+					}
+				}
+			}
+		}
+
 		foreach($files as $file) {
 			if(strstr($file, 'main.less')) {
 				$content = file_get_contents($file);
@@ -136,7 +152,7 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 				$test = file_put_contents($file,$content);
 			}
 		}
-		
+
 
 		switch( $this->configuration['enable']['mode'] )
 		{
