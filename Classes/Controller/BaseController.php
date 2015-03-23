@@ -151,6 +151,8 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 				if(strlen($tempcontent[0])>10) { 
 					$content = $tempcontent[0].'//version'.$newstamp;
 					$test = file_put_contents($file,$content);
+				} else {
+					\TYPO3\CMS\Core\Utility\GeneralUtility::sysLog('Empty file detected (file_get_contents):'.$file,'t3_less',2);
 				}
 			}
 		}
