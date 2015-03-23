@@ -148,8 +148,10 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			if(strstr($file, 'main.less')) {
 				$content = file_get_contents($file);
 				$tempcontent = explode('//version',$content);
-				$content = $tempcontent[0].'//version'.$newstamp;
-				$test = file_put_contents($file,$content);
+				if(strlen($tempcontent[0])>10) { 
+					$content = $tempcontent[0].'//version'.$newstamp;
+					$test = file_put_contents($file,$content);
+				}
 			}
 		}
 
