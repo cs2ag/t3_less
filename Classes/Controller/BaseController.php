@@ -55,18 +55,29 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	public function __construct()
 	{
 		//makeInstance should not be used, but injection does not work without FE-plugin?
+		if( TYPO3_MODE != 'FE' )
+		{
+			return;
+		}
 
 		$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance( 'TYPO3\\CMS\\Extbase\\Object\\ObjectManager' );
-
 		$configurationManager = $objectManager->get( 'TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManagerInterface' );
-
 		$configuration = $configurationManager->getConfiguration(
 			\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, 'T3Less', ''
 		);
 		$this->configuration = $configuration;
-
-		$this->lessfolder = \DG\T3Less\Utility\Utilities::getPath( $this->configuration['files']['pathToLessFiles'] );
-		$this->outputfolder = \DG\T3Less\Utility\Utilities::getPath( $this->configuration['files']['outputFolder'] );
+		$cObj = $configurationManager->getContentObject();
+		$tsconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_t3less.'];
+		if(is_array($this->configuration['files']['pathToLessFiles'])) {
+			$this->lessfolder = \DG\T3Less\Utility\Utilities::getPath( $cObj->cObjGetSingle($tsconfig['files.']['pathToLessFiles'],$tsconfig['files.']['pathToLessFiles.']) );
+		} else {
+			$this->lessfolder = \DG\T3Less\Utility\Utilities::getPath( $cObj->cObjGetSingle($tsconfig['files.']['pathToLessFiles'],$tsconfig['files.']['pathToLessFiles.']) );
+		}
+		if(is_array($this->configuration['files']['outputFolder'])) {
+			$this->outputfolder = \DG\T3Less\Utility\Utilities::getPath(  $cObj->cObjGetSingle($tsconfig['files.']['outputFolder'], $tsconfig['files.']['outputFolder.']) );
+		} else {
+			$this->outputfolder = \DG\T3Less\Utility\Utilities::getPath(  $cObj->cObjGetSingle($tsconfig['files.']['outputFolder'], $tsconfig['files.']['outputFolder.']) );
+		}
 		parent::__construct();
 	}
 
