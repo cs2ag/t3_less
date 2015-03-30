@@ -66,7 +66,8 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, 'T3Less', ''
 		);
 		$this->configuration = $configuration;
-		$cObj = $configurationManager->getContentObject();
+		//$cObj = $configurationManager->getContentObject();
+		$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
 		$tsconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_t3less.'];
 		if(is_array($this->configuration['files']['pathToLessFiles'])) {
 			$this->lessfolder = \DG\T3Less\Utility\Utilities::getPath( $cObj->cObjGetSingle($tsconfig['files.']['pathToLessFiles'],$tsconfig['files.']['pathToLessFiles.']) );
