@@ -72,12 +72,12 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		if(is_array($this->configuration['files']['pathToLessFiles'])) {
 			$this->lessfolder = \DG\T3Less\Utility\Utilities::getPath( $cObj->cObjGetSingle($tsconfig['files.']['pathToLessFiles'],$tsconfig['files.']['pathToLessFiles.']) );
 		} else {
-			$this->lessfolder = \DG\T3Less\Utility\Utilities::getPath( $cObj->cObjGetSingle($tsconfig['files.']['pathToLessFiles'],$tsconfig['files.']['pathToLessFiles.']) );
+			$this->lessfolder = \DG\T3Less\Utility\Utilities::getPath( $this->configuration['files']['pathToLessFiles'] ); 
 		}
 		if(is_array($this->configuration['files']['outputFolder'])) {
 			$this->outputfolder = \DG\T3Less\Utility\Utilities::getPath(  $cObj->cObjGetSingle($tsconfig['files.']['outputFolder'], $tsconfig['files.']['outputFolder.']) );
 		} else {
-			$this->outputfolder = \DG\T3Less\Utility\Utilities::getPath(  $cObj->cObjGetSingle($tsconfig['files.']['outputFolder'], $tsconfig['files.']['outputFolder.']) );
+			$this->outputfolder = \DG\T3Less\Utility\Utilities::getPath( $this->configuration['files']['outputFolder'] ); 
 		}
 		parent::__construct();
 	}
