@@ -1,5 +1,5 @@
 <?php
-namespace DG\T3Less\Controller;
+//namespace DG\T3Less\Controller;
 /* * *************************************************************
  *  Copyright notice
  *
@@ -32,7 +32,7 @@ namespace DG\T3Less\Controller;
  * @author  David Greiner <hallo@davidgreiner.de>
  */
 
-class LessPhpController extends BaseController
+class Tx_T3Less_Controller_LessPhpController extends Tx_T3Less_Controller_BaseController
 {
 	/**
 	 * lessPhp
@@ -41,15 +41,15 @@ class LessPhpController extends BaseController
 	 */
 	public function lessPhp( $files )
 	{
-		require_once (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath( 't3_less' ) . 'Resources/Private/Lib/' . $this->configuration['other']['lessPhpScriptPath']);
+		require_once (t3lib_extMgm::extPath( 't3_less' ) . 'Resources/Private/Lib/' . $this->configuration['other']['lessPhpScriptPath']);
 
 		// create outputfolder if it does not exist
 		if( !is_dir( $this->outputfolder ) )
 		{
-			\TYPO3\CMS\Core\Utility\GeneralUtility::mkdir_deep( '', $this->outputfolder );
+			\t3lib_div::mkdir_deep( '', $this->outputfolder );
 		}
 
-		$less = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance( 'lessc' );
+		$less = \t3lib_div::makeInstance( 'lessc' );
 		$this->checkForAdditionalConfiguration( $less );
 
 
@@ -79,7 +79,7 @@ class LessPhpController extends BaseController
 				{
 					\lessc::ccompile( $file, $this->outputfolder . substr( $filename, 0, -5 ) . '_' . $md5 . '.css' );
 				}
-				\TYPO3\CMS\Core\Utility\GeneralUtility::fixPermissions( $outputfile, FALSE );
+				\t3lib_div::fixPermissions( $outputfile, FALSE );
 			}
 		}
 
@@ -89,7 +89,7 @@ class LessPhpController extends BaseController
 			$this->unlinkGeneratedFilesWithNoSourceFile( $files );
 		}
 
-		$files = \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir( $this->outputfolder, "css" );
+		$files = \t3lib_div::getFilesInDir( $this->outputfolder, "css" );
 		//respect given sort order defined in TS
 		//usort( $files, array( $this, 'getSortOrderPhp' ) );
 		
@@ -133,7 +133,7 @@ class LessPhpController extends BaseController
 	{
 
 		// all available sourcefiles
-		//$sourceFiles = \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir($this->lessfolder, "less");
+		//$sourceFiles = \t3lib_div::getFilesInDir($this->lessfolder, "less");
 		// build array with md5 values from sourcefiles
 		$srcArr = array( );
 		foreach( $sourceFiles as $file )
@@ -148,7 +148,7 @@ class LessPhpController extends BaseController
 
 		// unlink every css file, which have no equal less-file
 		// checked by comparing md5-string from filename with md5_file(sourcefile)
-		foreach( \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir( $this->outputfolder, "css" ) as $cssFile )
+		foreach( \t3lib_div::getFilesInDir( $this->outputfolder, "css" ) as $cssFile )
 		{
 			$md5str = substr( substr( $cssFile, 0, -4 ), -32 );
 			if( !in_array( $md5str, $srcArr ) )
@@ -166,7 +166,7 @@ class LessPhpController extends BaseController
 			$importDirs = explode( ',', str_replace( ', ', ',', $this->configuration['other']['importDirs'] ) );
 			foreach( $importDirs as $importDir )
 			{
-				$less->addImportDir( \DG\T3Less\Utility\Utilities::getPath( $importDir ) );
+				$less->addImportDir( Tx_T3Less_Utility_Utilities::getPath( $importDir ) );
 			}
 		}
 		// register custom functions, #36273
@@ -179,7 +179,7 @@ class LessPhpController extends BaseController
 
 				if( count( $parts ) == 2 )
 				{
-					$hookObject = \TYPO3\CMS\Core\Utility\GeneralUtility::getUserObj( $parts[0] );
+					$hookObject = \t3lib_div::getUserObj( $parts[0] );
 					if( is_object( $hookObject ) && method_exists( $hookObject, $parts[1] ) )
 					{
 						$less->registerFunction( $key, array( $hookObject, $parts[1] ) );
