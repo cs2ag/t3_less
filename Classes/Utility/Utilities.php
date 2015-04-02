@@ -1,12 +1,12 @@
 <?php
-namespace DG\T3Less\Utility;
+//namespace DG\T3Less\Utility;
 /*
  * Author & Copyright: David Greiner
  * Contact: hallo@davidgreiner.de
  * Created on: 19.05.2013, 00:55:11
  */
 
-class Utilities
+class Tx_T3Less_Utility_Utilities
 {
 
 	/*
@@ -20,8 +20,8 @@ class Utilities
         // resolving 'EXT:' from path, if path begins with 'EXT:'
         if (!strcmp(substr($path, 0, 4), 'EXT:')) {
             list($extKey, $endOfPath) = explode('/', substr($path, 4), 2);
-            if ($extKey && \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded($extKey)) {
-                $extPath = \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::extPath($extKey);
+            if ($extKey && t3lib_extMgm::isLoaded($extKey)) {
+                $extPath = t3lib_extMgm::extPath($extKey);
 		$path = substr($extPath, strlen(PATH_site)) . $endOfPath;
             }
         }
@@ -60,7 +60,7 @@ class Utilities
 		$dirs = explode( ',', $dirs );
 		foreach( $dirs as &$dir )
 		{
-			$dir = \TYPO3\CMS\Core\Utility\GeneralUtility::getFileAbsFileName( trim( $dir ) );
+			$dir = t3lib_div::getFileAbsFileName( trim( $dir ) );
 		}
 		return $dirs;
 	}
