@@ -1,5 +1,5 @@
 <?php
-namespace DG\T3Less\Controller;
+
 	/* * *************************************************************
      *  Copyright notice
      *
@@ -32,8 +32,7 @@ namespace DG\T3Less\Controller;
  * @author  David Greiner <hallo@davidgreiner.de>
  * @author  Thomas Heuer <technik@thomas-heuer.de>
  */
-class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
-{
+class Tx_T3Less_Controller_BaseController extends \Tx_Extbase_MVC_Controller_ActionController {
 	/**
 	 * configuration array from constants
 	 * @var array $configuration
@@ -60,24 +59,24 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			return;
 		}
 
-		$objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance( 'TYPO3\\CMS\\Extbase\\Object\\ObjectManager' );
-		$configurationManager = $objectManager->get( 'TYPO3\\CMS\\Extbase\\Configuration\\ConfigurationManagerInterface' );
+		$objectManager = t3lib_div::makeInstance( 'Tx_Extbase_Object_ObjectManager' );
+		$configurationManager = $objectManager->get( 'Tx_Extbase_Configuration_ConfigurationManagerInterface' );
 		$configuration = $configurationManager->getConfiguration(
-			\TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, 'T3Less', ''
+            Tx_Extbase_Configuration_ConfigurationManagerInterface::CONFIGURATION_TYPE_FRAMEWORK, 'T3Less', ''
 		);
 		$this->configuration = $configuration;
-		//$cObj = $configurationManager->getContentObject();
-		$cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
+		$cObj = $configurationManager->getContentObject();
+		//$cObj = t3lib_div::makeInstance('TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer');
 		$tsconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_t3less.'];
 		if(is_array($this->configuration['files']['pathToLessFiles'])) {
-			$this->lessfolder = \DG\T3Less\Utility\Utilities::getPath( $cObj->cObjGetSingle($tsconfig['files.']['pathToLessFiles'],$tsconfig['files.']['pathToLessFiles.']) );
+			$this->lessfolder = Tx_T3Less_Utility_Utilities::getPath( $cObj->cObjGetSingle($tsconfig['files.']['pathToLessFiles'],$tsconfig['files.']['pathToLessFiles.']) );
 		} else {
-			$this->lessfolder = \DG\T3Less\Utility\Utilities::getPath( $this->configuration['files']['pathToLessFiles'] ); 
+			$this->lessfolder = Tx_T3Less_Utility_Utilities::getPath( $this->configuration['files']['pathToLessFiles'] );
 		}
 		if(is_array($this->configuration['files']['outputFolder'])) {
-			$this->outputfolder = \DG\T3Less\Utility\Utilities::getPath(  $cObj->cObjGetSingle($tsconfig['files.']['outputFolder'], $tsconfig['files.']['outputFolder.']) );
+			$this->outputfolder = Tx_T3Less_Utility_Utilities::getPath(  $cObj->cObjGetSingle($tsconfig['files.']['outputFolder'], $tsconfig['files.']['outputFolder.']) );
 		} else {
-			$this->outputfolder = \DG\T3Less\Utility\Utilities::getPath( $this->configuration['files']['outputFolder'] ); 
+			$this->outputfolder = Tx_T3Less_Utility_Utilities::getPath( $this->configuration['files']['outputFolder'] );
 		}
 		parent::__construct();
 	}
@@ -101,19 +100,19 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 			if( $this->lessfolder && $this->outputfolder )
 			{
 				// are there files in the defined less folder?
-				if( \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir( $this->lessfolder, "less", TRUE ) )
+				if( t3lib_div::getFilesInDir( $this->lessfolder, "less", TRUE ) )
 				{
-					$files = \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir( $this->lessfolder, "less", TRUE );
+					$files = t3lib_div::getFilesInDir( $this->lessfolder, "less", TRUE );
 
 				}
 				else
 				{
-					echo \DG\T3Less\Utility\Utilities::wrapErrorMessage( \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate( 'noLessFilesInFolder', $this->extensionName, $arguments = array( 's' => $this->lessfolder ) ) );
+					echo Tx_T3Less_Utility_Utilities::wrapErrorMessage( \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate( 'noLessFilesInFolder', $this->extensionName, $arguments = array( 's' => $this->lessfolder ) ) );
 				}
 			}
 			else
 			{
-				echo \DG\T3Less\Utility\Utilities::wrapErrorMessage( \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate( 'emptyPathes', $this->extensionName ) );
+				echo Tx_T3Less_Utility_Utilities::wrapErrorMessage( \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate( 'emptyPathes', $this->extensionName ) );
 			}
 		}
 
@@ -123,20 +122,20 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		{
 			foreach( $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['t3less']['addForeignLessFiles'] as $hookedFilePath )
 			{
-				$hookPath = \DG\T3Less\Utility\Utilities::getPath( $hookedFilePath );
-				$files[] = \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir( $hookPath, "less", TRUE );
+				$hookPath = Tx_T3Less_Utility_Utilities::getPath( $hookedFilePath );
+				$files[] = t3lib_div::getFilesInDir( $hookPath, "less", TRUE );
 			}
-			$files = \DG\T3Less\Utility\Utilities::flatArray( null, $files );
+			$files = Tx_T3Less_Utility_Utilities::flatArray( null, $files );
 		}
 
 		$newstamp = 0;
-		$dirs = \TYPO3\CMS\Core\Utility\GeneralUtility::get_dirs( $this->lessfolder);
+		$dirs = t3lib_div::get_dirs( $this->lessfolder);
 		if($this->lessfolder != 'typo3conf/ext/template_local/Resources/Public/Stylesheet/less/') {
-			$dirsmain = \TYPO3\CMS\Core\Utility\GeneralUtility::get_dirs('typo3conf/ext/template_local/Resources/Public/Stylesheet/less/');
+			$dirsmain = t3lib_div::get_dirs('typo3conf/ext/template_local/Resources/Public/Stylesheet/less/');
 		}
 
 		foreach($dirs as $dir) {
-			$infiles = \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir( $this->lessfolder.$dir, "less", TRUE );
+			$infiles = t3lib_div::getFilesInDir( $this->lessfolder.$dir, "less", TRUE );
 			foreach($infiles as $ffiles) {
 				$timedat = filemtime($ffiles);
 				if ($timedat > $newstamp) {
@@ -146,7 +145,7 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		}
 		if($this->lessfolder != 'typo3conf/ext/template_local/Resources/Public/Stylesheet/less/') {
 			foreach ($dirsmain as $dir) {
-				$infiles = \TYPO3\CMS\Core\Utility\GeneralUtility::getFilesInDir('typo3conf/ext/template_local/Resources/Public/Stylesheet/less/' . $dir, "less", TRUE);
+				$infiles = t3lib_div::getFilesInDir('typo3conf/ext/template_local/Resources/Public/Stylesheet/less/' . $dir, "less", TRUE);
 				foreach ($infiles as $ffiles) {
 					$timedat = filemtime($ffiles);
 					if ($timedat > $newstamp) {
@@ -164,7 +163,7 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 					$content = $tempcontent[0].'//version'.$newstamp;
 					$test = file_put_contents($file,$content);
 				} else {
-					\TYPO3\CMS\Core\Utility\GeneralUtility::sysLog('Empty file detected (file_get_contents):'.$file,'t3_less',2);
+					t3lib_div::sysLog('Empty file detected (file_get_contents):'.$file,'t3_less',2);
 				}
 			}
 		}
@@ -173,24 +172,24 @@ class BaseController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		switch( $this->configuration['enable']['mode'] )
 		{
 			case 'PHP-Compiler':
-				$controller = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance( 'DG\\T3Less\\Controller\\LessPhpController' );
+				$controller = t3lib_div::makeInstance( 'Tx_T3Less_Controller_LessPhpController' );
 				$controller->lessPhp( $files );
 				break;
 
 			case 'JS-Compiler':
-				$controller = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance( 'DG\\T3Less\\Controller\\LessJsController' );
+				$controller = t3lib_div::makeInstance( 'DG\\T3Less\\Controller\\LessJsController' );
 				$controller->lessJs( $files );
 				break;
 
 			case 'JS-Compiler via Node.js':
-				$controller = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance( 'DG\\T3Less\\Controller\\LessJsNodeController' );
+				$controller = t3lib_div::makeInstance( 'DG\\T3Less\\Controller\\LessJsNodeController' );
 				if( $controller->isLesscInstalled() )
 				{
 					$controller->lessc( $files );
 				}
 				else
 				{
-					echo \DG\T3Less\Utility\Utilities::wrapErrorMessage( \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate( 'lesscRequired', $this->extensionName ) );
+					echo Tx_T3Less_Utility_Utilities::wrapErrorMessage( \TYPO3\CMS\Extbase\Utility\LocalizationUtility::translate( 'lesscRequired', $this->extensionName ) );
 				}
 				break;
 		}
