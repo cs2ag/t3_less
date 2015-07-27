@@ -46,7 +46,7 @@ class LessPhpController extends BaseController
 		// create outputfolder if it does not exist
 		if( !is_dir( $this->outputfolder ) )
 		{
-			\TYPO3\CMS\Core\Utility\GeneralUtility::mkdir_deep( '', $this->outputfolder );
+			\TYPO3\CMS\Core\Utility\GeneralUtility::mkdir_deep(PATH_site, $this->outputfolder );
 		}
 
 		$less = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance( 'lessc' );
