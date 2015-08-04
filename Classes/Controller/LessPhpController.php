@@ -46,7 +46,7 @@ class Tx_T3Less_Controller_LessPhpController extends Tx_T3Less_Controller_BaseCo
 		// create outputfolder if it does not exist
 		if( !is_dir( $this->outputfolder ) )
 		{
-			\t3lib_div::mkdir_deep( '', $this->outputfolder );
+			\t3lib_div::mkdir_deep(PATH_site, $this->outputfolder );
 		}
 
 		$less = \t3lib_div::makeInstance( 'lessc' );
